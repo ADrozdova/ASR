@@ -207,11 +207,19 @@ class Trainer(BaseTrainer):
         if self.writer is None:
             return
         argmax_predictions = log_probs.cpu().argmax(-1)
+
+        # argmax_predictions = [
+        #     self.text_encoder.decode(p)[: int(l)]
+        #     for p, l in zip(argmax_predictions, log_probs_length)
+        # ]
+        # predicted_texts = [self.text_encoder.ctc_decode(p) for p in argmax_predictions]
+
+        predicted_texts = [self.text_encoder.ctc_decode(p) for p in argmax_predictions]
         argmax_predictions = [
             self.text_encoder.decode(p)[: int(l)]
             for p, l in zip(argmax_predictions, log_probs_length)
         ]
-        predicted_texts = [self.text_encoder.ctc_decode(p) for p in argmax_predictions]
+
         tuples = list(zip(predicted_texts, text, argmax_predictions))
         shuffle(tuples)
         to_log_pred = []
