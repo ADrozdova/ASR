@@ -55,7 +55,7 @@
   "optimizer": {
     "type": "SGD",
     "args": {
-      "lr": 3e-4
+      "lr": 1e-1
     }
   },
   "loss": {
@@ -82,7 +82,7 @@
       "steps_per_epoch": 100,
       "epochs": 50,
       "anneal_strategy": "cos",
-      "max_lr": 4e-3,
+      "max_lr": 1e-1,
       "pct_start": 0.2
     }
   },
