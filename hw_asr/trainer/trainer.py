@@ -132,6 +132,7 @@ class Trainer(BaseTrainer):
         if is_train:
             self.optimizer.zero_grad()
         outputs = self.model(**batch)
+
         if type(outputs) is dict:
             batch.update(outputs)
         else:
@@ -231,7 +232,7 @@ class Trainer(BaseTrainer):
 
     def _log_spectrogram(self, spectrogram_batch):
         spectrogram = random.choice(spectrogram_batch)
-        image = PIL.Image.open(plot_spectrogram_to_buf(spectrogram.cpu().log()))
+        image = PIL.Image.open(plot_spectrogram_to_buf(torch.transpose(spectrogram.cpu(), 0, 1).log()))
         self.writer.add_image("spectrogram", ToTensor()(image))
 
     @torch.no_grad()

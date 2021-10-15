@@ -4,6 +4,7 @@ import random
 import numpy as np
 import torch
 import torchaudio
+import string
 from torch import Tensor
 from torch.utils.data import Dataset
 
@@ -100,7 +101,9 @@ class BaseDataset(Dataset):
     ) -> list:
         initial_size = len(index)
         if max_audio_length is not None:
-            exceeds_audio_length = np.array([el["length"] for el in index]) <= max_audio_length
+            # print(index[0]["audio_len"])
+            # exceeds_audio_length = np.array([el["length"] for el in index]) <= max_audio_length
+            exceeds_audio_length = np.array([el["audio_len"] for el in index]) >= max_audio_length
             _total = exceeds_audio_length.sum()
             logger.info(
                 f"{_total} ({_total / initial_size:.1%}) records are longer then "
@@ -114,7 +117,7 @@ class BaseDataset(Dataset):
             exceeds_text_length = np.array(
                 [
                     len(BaseTextEncoder.normalize_text(el["text"]))
-                    for el in index]) <= max_text_length
+                    for el in index]) >= max_text_length
             _total = exceeds_text_length.sum()
             logger.info(
                 f"{_total} ({_total / initial_size:.1%}) records are longer then "
@@ -136,4 +139,8 @@ class BaseDataset(Dataset):
             random.seed(42)  # best seed for deep learning
             random.shuffle(index)
             index = index[:limit]
+
+        for item in index:
+            item["text"] = item["text"].translate(str.maketrans('', '', string.punctuation))
+
         return index
