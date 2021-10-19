@@ -81,11 +81,11 @@ class QuartzNet(BaseModel):
         layers = [ConvBNReLU(n_feats, channels[0], kernel_sz[0], stride=2, padding=kernel_sz[0] // 2)]  # C_1
         for i in range(n_blocks):
             for j in range(seq_len):
-                layers.append(QuartzNetBlock(channels[i], channels[i + 1], repeat, kernel_sz[i + 1]))  # B
+                in_channels = channels[i] if j == 0 else channels[i + 1]
+                layers.append(QuartzNetBlock(in_channels, channels[i + 1], repeat, kernel_sz[i + 1]))  # B
         layers.append(ConvBNReLU(channels[-3], channels[-2], kernel_sz[-3], dilation=2,
                                  padding=(2 * kernel_sz[-3]) // 2 - 1))  # C_2
         layers.append(ConvBNReLU(channels[-2], channels[-1], kernel_sz[-2]))  # C_3
-        # layers.append(ConvBNReLU(channels[-1], n_class, kernel_sz[-1], dilation=2, bias=True, separable=False))  # C_4
         layers.append(nn.Conv1d(channels[-1], n_class, kernel_sz[-1], dilation=2, bias=True))  # C_4
         self.net = Sequential(*layers)
 
