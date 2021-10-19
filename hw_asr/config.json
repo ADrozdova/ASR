@@ -14,10 +14,14 @@
     "spectrogram": []
   },
   "arch": {
-    "type": "SimpleRnnModel",
+    "type": "QuartzNet",
     "args": {
       "n_feats": 128,
-      "fc_hidden": 512
+      "fc_hidden": 512,
+      "n_blocks":  5,
+      "repeat": 3,
+      "channels": [256, 256, 256, 512, 512, 512, 512, 1024],
+      "kernel_sz": [33, 33, 39, 51, 63, 75, 87, 1, 1]
     }
   },
   "data": {
@@ -87,7 +91,7 @@
     }
   },
   "trainer": {
-    "epochs": 120,
+    "epochs": 1,
     "save_dir": "saved/",
     "save_period": 5,
     "verbosity": 2,
@@ -96,6 +100,6 @@
     "visualize": "wandb",
     "wandb_project": "asr_project",
     "grad_norm_clip": 10,
-    "len_epoch": 10
+    "len_epoch": 1
   }
 }

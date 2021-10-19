@@ -1,4 +1,5 @@
 from torch import nn
+from torch import transpose
 from torch.nn import Sequential
 
 from hw_asr.base import BaseModel
@@ -62,7 +63,7 @@ class QuartzNetBlock(nn.Module):
                 dilation=dilation,
                 padding=padding_val,
                 separable=False,
-                activation=activation
+                activation="relu"
             )
         self.out = nn.ReLU(inplace=True)
         self.net = nn.Sequential(*layers)
@@ -88,7 +89,7 @@ class QuartzNet(BaseModel):
 
     def forward(self, spectrogram, *args, **kwargs):
         output = self.net(spectrogram)
-        return {"logits": output}
+        return {"logits": transpose(output, 1, 2)}
 
     def transform_input_lengths(self, input_lengths):
         return input_lengths  # we don't reduce time dimension here
