@@ -19,3 +19,4 @@ librosa==0.8.1
 googledrivedownloader
 pyctcdecode==0.1.0
 wget==3.2
+https://github.com/kpu/kenlm/archive/master.zip
