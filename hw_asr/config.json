@@ -19,13 +19,6 @@
             }
       },
       {
-        "type": "TimeShift",
-            "args": {
-              "start": -4800,
-              "stop": 4800
-            }
-      },
-      {
         "type": "PolarityInversion",
             "args": {
               "p": 1.0,
