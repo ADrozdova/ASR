@@ -32,6 +32,6 @@ class AddNoise(AugmentationBase):
 
         start_ = np.random.randint(bg.shape[0] - 16000)
         bg_slice = bg[start_: start_ + 16000]
-        wav_with_bg: Tensor = data * torch.from_numpy(np.random.uniform(0.8, 1.2)) + \
+        wav_with_bg: Tensor = data * np.random.uniform(0.8, 1.2) +\
                               torch.from_numpy(bg_slice * np.random.uniform(0, 0.1))
         return wav_with_bg
