@@ -10,8 +10,52 @@
     }
   },
   "augmentations": {
-    "wave": [],
-    "spectrogram": []
+    "wave": [
+      {
+        "type": "Gain",
+            "args": {
+              "p": 1.0,
+              "sr": 16000
+            }
+      },
+      {
+        "type": "TimeShift",
+            "args": {
+              "start": -4800,
+              "stop": 4800
+            }
+      },
+      {
+        "type": "PolarityInversion",
+            "args": {
+              "p": 1.0,
+              "sr": 16000
+            }
+      },
+      {
+        "type": "PitchShift",
+            "args": {
+              "steps": 4,
+              "sr": 16000
+            }
+      },
+      {
+        "type": "AddNoise",
+            "args": {
+              "sr": 16000
+            }
+      }
+    ],
+    "spectrogram": [
+      {
+        "type": "SpecAugment",
+            "args": {
+              "fixed_rate": 1.2,
+              "time_mask_param": 80,
+              "freq_mask_param": 80
+            }
+      }
+    ]
   },
   "arch": {
     "type": "QuartzNet",
