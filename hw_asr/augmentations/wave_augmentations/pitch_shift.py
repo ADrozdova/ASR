@@ -1,6 +1,9 @@
-import librosa as lr
-from torch import Tensor
 import random
+
+import librosa as lr
+import torch
+from torch import Tensor
+
 from hw_asr.augmentations.base import AugmentationBase
 
 
@@ -11,4 +14,5 @@ class PitchShift(AugmentationBase):
 
     def __call__(self, data: Tensor):
         n_steps = float(random.randint(-self.steps, self.steps))
-        return lr.effects.pitch_shift(data, self.sampling_rate, n_steps=n_steps)
+
+        return torch.from_numpy(lr.effects.pitch_shift(data.numpy(), self.sampling_rate, n_steps=n_steps))
