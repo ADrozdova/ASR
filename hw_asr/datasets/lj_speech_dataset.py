@@ -55,6 +55,7 @@ class LJSpeechDataset(BaseDataset):
 
     def _create_index(self, part):
         index = []
+        self._load_part(part)
         wav_dir = Path(self._data_dir / "wavs")
         meta_file = open(self._data_dir / "metadata.csv", "r")
         for line in meta_file:
