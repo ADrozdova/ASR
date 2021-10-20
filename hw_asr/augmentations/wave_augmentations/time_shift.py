@@ -7,6 +7,7 @@ from hw_asr.augmentations.base import AugmentationBase
 
 
 class TimeShift(AugmentationBase):
+    # source: https://www.kaggle.com/haqishen/augmentation-methods-for-audio/notebook
     def __init__(self, *args, **kwargs):
         self.start = kwargs.get("start")
         self.stop = kwargs.get("stop")

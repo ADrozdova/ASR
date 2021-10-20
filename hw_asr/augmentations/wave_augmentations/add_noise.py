@@ -25,13 +25,18 @@ class AddNoise(AugmentationBase):
         self.sr = kwargs.get("sr", 16000)
 
     def __call__(self, data: Tensor):
+        # source: https://www.kaggle.com/haqishen/augmentation-methods-for-audio/notebook
+        data = data.squeeze(0)
         chosen_bg_file = self.bg_files[randint(len(self.bg_files))]
 
         filepath = os.path.join(self.dir, chosen_bg_file)
         bg, sr = librosa.load(filepath, sr=self.sr)
+        if bg.shape[0] >= data.shape[0]:
+            noise = bg[:len(data)]
+        else:
+            noise = np.zeros(data.shape)
+            start_ = np.random.randint(noise.shape[0] - bg.shape[0])
+            noise[start_:start_ + bg.shape[0]] = bg
 
-        start_ = np.random.randint(bg.shape[0] - 16000)
-        bg_slice = bg[start_: start_ + 16000]
-        wav_with_bg: Tensor = data * np.random.uniform(0.8, 1.2) +\
-                              torch.from_numpy(bg_slice * np.random.uniform(0, 0.1))
-        return wav_with_bg
+        wav_with_bg: Tensor = data * np.random.uniform(0.8, 1.2) + torch.from_numpy(noise) * np.random.uniform(0, 0.1)
+        return wav_with_bg.unsqueeze(0)
