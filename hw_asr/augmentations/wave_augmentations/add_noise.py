@@ -21,7 +21,7 @@ class AddNoise(AugmentationBase):
                                                 dest_path=zip_file,
                                                 unzip=True)
             os.remove(zip_file)
-        self.bg_files = os.listdir('self.dir')
+        self.bg_files = os.listdir(self.dir)
         self.sr = kwargs.get("sr", 16000)
 
     def __call__(self, data: Tensor):
