@@ -15,7 +15,7 @@
         "type": "Gain",
             "args": {
               "p": 1.0,
-              "sr": 16000
+              "sample_rate": 16000
             }
       },
       {
@@ -29,14 +29,14 @@
         "type": "PolarityInversion",
             "args": {
               "p": 1.0,
-              "sr": 16000
+              "sample_rate": 16000
             }
       },
       {
         "type": "PitchShift",
             "args": {
               "steps": 4,
-              "sr": 16000
+              "sample_rate": 16000
             }
       },
       {
