@@ -55,33 +55,17 @@ class LJSpeechDataset(BaseDataset):
 
     def _create_index(self, part):
         index = []
-        split_dir = self._data_dir / part
-        if not split_dir.exists():
-            self._load_part(part)
-
-        flac_dirs = set()
-        for dirpath, dirnames, filenames in os.walk(str(split_dir)):
-            if any([f.endswith(".flac") for f in filenames]):
-                flac_dirs.add(dirpath)
-        for flac_dir in tqdm(
-                list(flac_dirs), desc=f"Preparing LJSpeech-1.1 folders: {part}"
-        ):
-            flac_dir = Path(flac_dir)
-            trans_path = list(flac_dir.glob("*.trans.txt"))[0]
-            with trans_path.open() as f:
-                for line in f:
-                    f_id = line.split()[0]
-                    f_text = " ".join(line.split()[1:]).strip()
-                    flac_path = flac_dir / f"{f_id}.flac"
-                    t_info = torchaudio.info(str(flac_path))
-                    length = t_info.num_frames / t_info.sample_rate
-                    index.append(
-                        {
-                            "path": str(flac_path.absolute().resolve()),
-                            "text": f_text.lower(),
-                            "audio_len": length,
-                        }
-                    )
+        wav_dir = Path(self._data_dir / "wavs")
+        meta_file = open(self._data_dir / "metadata.csv", "r")
+        for line in meta_file:
+            idx, text, norm_text = line.strip().split("|")
+            wav_path = wav_dir / f"{idx}.wav"
+            info = torchaudio.info(str(wav_path))
+            index.append({
+                "path": str(wav_path.absolute().resolve()),
+                "text": norm_text.lower(),
+                "audio_len": info.num_frames / info.sample_rate,
+            })
         return index
 
 
@@ -90,7 +74,7 @@ if __name__ == "__main__":
     config_parser = ConfigParser.get_default_configs()
 
     ds = LJSpeechDataset(
-        "dev-clean", text_encoder=text_encoder, config_parser=config_parser
+        "LJSpeech", text_encoder=text_encoder, config_parser=config_parser
     )
     item = ds[0]
     print(item)
