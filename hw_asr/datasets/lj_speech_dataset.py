@@ -16,7 +16,8 @@ from hw_asr.utils.parse_config import ConfigParser
 logger = logging.getLogger(__name__)
 
 URL_LINKS = {
-    "LJSpeech": "https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2"
+    "LJSpeech-train": "https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2",
+    "LJSpeech-test": "https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2"
 }
 
 
@@ -33,7 +34,7 @@ class LJSpeechDataset(BaseDataset):
         super().__init__(index, *args, **kwargs)
 
     def _load_part(self, part):
-        arch_path = self._data_dir / f"{part}.tar.gz"
+        arch_path = self._data_dir / "LJSpeech-1.1.tar.bz2"
         print(f"Loading {part}")
         download_file(URL_LINKS[part], arch_path)
         shutil.unpack_archive(arch_path, self._data_dir)
@@ -60,13 +61,17 @@ class LJSpeechDataset(BaseDataset):
         meta_file = open(self._data_dir / "metadata.csv", "r")
         for line in meta_file:
             idx, text, norm_text = line.strip().split("|")
-            wav_path = wav_dir / f"{idx}.wav"
-            info = torchaudio.info(str(wav_path))
-            index.append({
-                "path": str(wav_path.absolute().resolve()),
-                "text": norm_text.lower(),
-                "audio_len": info.num_frames / info.sample_rate,
-            })
+            test_part = int(idx.split("-")[1]) % 5 == 0 and part == "LJSpeech-test"
+            train_part = int(idx.split("-")[1]) % 5 != 0 and part == "LJSpeech-train"
+            if test_part or train_part:
+                wav_path = wav_dir / f"{idx}.wav"
+                info = torchaudio.info(str(wav_path))
+                index.append({
+                    "path": str(wav_path.absolute().resolve()),
+                    "text": norm_text.lower(),
+                    "audio_len": info.num_frames / info.sample_rate,
+                })
+        meta_file.close()
         return index
 
 

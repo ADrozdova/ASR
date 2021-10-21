@@ -44,8 +44,8 @@
         "type": "SpecAugment",
             "args": {
               "fixed_rate": 1.2,
-              "time_mask_param": 80,
-              "freq_mask_param": 80
+              "time_mask_param": 20,
+              "freq_mask_param": 10
             }
       }
     ]
@@ -64,13 +64,13 @@
   },
   "data": {
     "train": {
-      "batch_size": 20,
+      "batch_size": 32,
       "num_workers": 5,
       "datasets": [
         {
-          "type": "LibrispeechDataset",
+          "type": "LJSpeechDataset",
           "args": {
-            "part": "train-clean-100",
+            "part": "LJSpeech-train",
             "max_audio_length": 20.0,
             "max_text_length": 200,
             "limit" : 20
@@ -79,13 +79,13 @@
       ]
     },
     "val": {
-      "batch_size": 20,
+      "batch_size": 32,
       "num_workers": 5,
       "datasets": [
         {
-          "type": "LibrispeechDataset",
+          "type": "LJSpeechDataset",
           "args": {
-            "part": "dev-clean",
+            "part": "LJSpeech-test",
             "max_audio_length": 20.0,
             "max_text_length": 200,
             "limit" : 20
@@ -97,7 +97,7 @@
   "optimizer": {
     "type": "SGD",
     "args": {
-      "lr": 1e-1
+      "lr": 1e-2
     }
   },
   "loss": {
@@ -129,7 +129,7 @@
     }
   },
   "trainer": {
-    "epochs": 1,
+    "epochs": 40,
     "save_dir": "saved/",
     "save_period": 5,
     "verbosity": 2,
@@ -138,6 +138,6 @@
     "visualize": "wandb",
     "wandb_project": "asr_project",
     "grad_norm_clip": 10,
-    "len_epoch": 1
+    "len_epoch": 20
   }
 }

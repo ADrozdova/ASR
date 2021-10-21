@@ -12,7 +12,7 @@ def from_configs(configs: ConfigParser):
     wave_augs = []
     if "augmentations" in configs.config and "wave" in configs.config["augmentations"]:
         for aug_dict in configs.config["augmentations"]["wave"]:
-            p = float(aug_dict.get("p", 0.5))
+            p = float(aug_dict.get("prob", 0.3))
             wave_augs.append(
                 RandomApply(
                     configs.init_obj(aug_dict, hw_asr.augmentations.wave_augmentations), p
@@ -22,7 +22,7 @@ def from_configs(configs: ConfigParser):
     spec_augs = []
     if "augmentations" in configs.config and "spectrogram" in configs.config["augmentations"]:
         for aug_dict in configs.config["augmentations"]["spectrogram"]:
-            p = float(aug_dict.get("p", 0.5))
+            p = float(aug_dict.get("prob", 0.3))
             spec_augs.append(
                 RandomApply(
                     configs.init_obj(aug_dict, hw_asr.augmentations.spectrogram_augmentations), p
