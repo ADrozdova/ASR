@@ -51,15 +51,12 @@
     ]
   },
   "arch": {
-    "type": "QuartzNet",
+    "type": "DS2",
     "args": {
       "n_feats": 128,
-      "fc_hidden": 512,
-      "n_blocks":  5,
-      "repeat": 5,
-      "channels": [256, 256, 256, 512, 512, 512, 512, 1024],
-      "kernel_sz": [33, 33, 39, 51, 63, 75, 87, 1, 1],
-      "seq_len": 3
+      "n_cnn": 3,
+      "n_rnn":  5,
+      "hidden": 512
     }
   },
   "data": {
@@ -72,8 +69,7 @@
           "args": {
             "part": "LJSpeech-train",
             "max_audio_length": 20.0,
-            "max_text_length": 200,
-            "limit" : 20
+            "max_text_length": 200
           }
         }
       ]
@@ -87,17 +83,16 @@
           "args": {
             "part": "LJSpeech-test",
             "max_audio_length": 20.0,
-            "max_text_length": 200,
-            "limit" : 20
+            "max_text_length": 200
           }
         }
       ]
     }
   },
   "optimizer": {
-    "type": "SGD",
+    "type": "AdamW",
     "args": {
-      "lr": 1e-2
+      "lr": 5e-4
     }
   },
   "loss": {
@@ -121,15 +116,15 @@
   "lr_scheduler": {
     "type": "OneCycleLR",
     "args": {
-      "steps_per_epoch": 100,
-      "epochs": 50,
-      "anneal_strategy": "cos",
-      "max_lr": 1e-1,
+      "steps_per_epoch": 350,
+      "epochs": 100,
+      "anneal_strategy": "linear",
+      "max_lr": 5e-4,
       "pct_start": 0.2
     }
   },
   "trainer": {
-    "epochs": 40,
+    "epochs": 100,
     "save_dir": "saved/",
     "save_period": 5,
     "verbosity": 2,
@@ -137,7 +132,6 @@
     "early_stop": 100,
     "visualize": "wandb",
     "wandb_project": "asr_project",
-    "grad_norm_clip": 10,
-    "len_epoch": 20
+    "grad_norm_clip": 10
   }
 }
