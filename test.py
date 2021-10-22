@@ -65,7 +65,7 @@ def main(config, out_file):
                         "ground_trurh": batch["text"][i],
                         "pred_text_argmax": text_encoder.ctc_decode(argmax),
                         "pred_text_beam_search": text_encoder.ctc_beam_search(
-                            batch["probs"], batch["log_probs_length"], beam_size=100
+                            batch["probs"][i], batch["log_probs_length"][i], beam_size=100
                         )[:10],
                     }
                 )
@@ -166,6 +166,6 @@ if __name__ == "__main__":
 
     assert config.config.get("data", {}).get("test", None) is not None
     config["data"]["test"]["batch_size"] = args.batch_size
-    config["data"]["test"]["n_jobs"] = args.n_jobs
+    config["data"]["test"]["n_jobs"] = args.jobs
 
     main(config, args.output)
