@@ -38,7 +38,7 @@ class BGRU(nn.Module):
     def forward(self, x):
         x = self.layer_norm(x)
         x = F.gelu(x)
-        x, _ = self.BiGRU(x)
+        x, _ = self.bgru(x)
         x = self.dropout(x)
         return x
 
@@ -73,7 +73,7 @@ class DS2(BaseModel):
     def forward(self, spectrogram):
         spectrogram = spectrogram.unsqueeze(1)
         x = self.cnn(spectrogram)
-        x = self.rescnn_layers(x)
+        x = self.rcnn(x)
         x = x.transpose(2, 3).contiguous()
         sz = x.size()
         x = x.view(sz[0], sz[1] * sz[2], sz[3])
