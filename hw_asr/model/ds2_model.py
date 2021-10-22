@@ -70,7 +70,7 @@ class DS2(BaseModel):
             nn.Linear(hidden, n_class)
         )
 
-    def forward(self, spectrogram):
+    def forward(self, spectrogram, *args, **kwargs):
         spectrogram = spectrogram.unsqueeze(1)
         x = self.cnn(spectrogram)
         x = self.rcnn(x)
