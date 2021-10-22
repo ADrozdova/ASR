@@ -21,13 +21,6 @@ class ResidualCNN(nn.Module):
             nn.Conv2d(out_channels, out_channels, kernel, stride, padding=kernel // 2)
         )
 
-        self.cnn1 = nn.Conv2d(in_channels, out_channels, kernel, stride, padding=kernel // 2)
-        self.cnn2 = nn.Conv2d(out_channels, out_channels, kernel, stride, padding=kernel // 2)
-        self.dropout1 = nn.Dropout(dropout)
-        self.dropout2 = nn.Dropout(dropout)
-        self.layer_norm1 = CNNLayerNorm(n_feats)
-        self.layer_norm2 = CNNLayerNorm(n_feats)
-
     def forward(self, x):
         return x + self.rcnn(x)
 
@@ -53,7 +46,7 @@ class BGRU(nn.Module):
 class DS2(BaseModel):
     """Model Inspired by DeepSpeech 2"""
     def __init__(self, n_feats, n_class, n_cnn, n_rnn, hidden, stride=2, dropout=0.1, *args, **kwargs):
-        super(DS2, self).__init__()
+        super(DS2, self).__init__(n_feats, n_class, *args, **kwargs)
         n_feats = n_feats // 2
         self.cnn = nn.Conv2d(1, 32, 3, stride=stride, padding=3 // 2)
 
