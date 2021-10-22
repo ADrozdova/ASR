@@ -1,11 +1,14 @@
+import gzip
+import os
+import shutil
+import wget
 from typing import List, Tuple
 
+import kenlm
 import torch
-import gzip
-import os, shutil, wget
+from pyctcdecode import build_ctcdecoder
 
 from hw_asr.text_encoder.char_text_encoder import CharTextEncoder
-from pyctcdecode import build_ctcdecoder
 
 
 class CTCCharTextEncoder(CharTextEncoder):
@@ -20,7 +23,7 @@ class CTCCharTextEncoder(CharTextEncoder):
             self.ind2char[max(self.ind2char.keys()) + 1] = text
         self.char2ind = {v: k for k, v in self.ind2char.items()}
         lm_path, unigram_list = self.load_kenlm()
-        self.decoder = build_ctcdecoder([''] + alphabet, lm_path, unigram_list)
+        self.decoder = build_ctcdecoder([''] + alphabet[1:], kenlm.Model(lm_path), unigram_list)
 
     def load_kenlm(self):
         # source: https://github.com/kensho-technologies/pyctcdecode/blob/main/tutorials/01_pipeline_nemo.ipynb
