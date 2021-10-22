@@ -65,9 +65,9 @@
       "num_workers": 5,
       "datasets": [
         {
-          "type": "LJSpeechDataset",
+          "type": "LibrispeechDatasetDS",
           "args": {
-            "part": "LJSpeech-train",
+            "part": "train-clean-100",
             "max_audio_length": 20.0,
             "max_text_length": 200
           }
@@ -79,9 +79,9 @@
       "num_workers": 5,
       "datasets": [
         {
-          "type": "LJSpeechDataset",
+          "type": "LibrispeechDatasetDS",
           "args": {
-            "part": "LJSpeech-test",
+            "part": "dev-clean",
             "max_audio_length": 20.0,
             "max_text_length": 200
           }
@@ -124,7 +124,7 @@
     }
   },
   "trainer": {
-    "epochs": 100,
+    "epochs": 150,
     "save_dir": "saved/",
     "save_period": 5,
     "verbosity": 2,
