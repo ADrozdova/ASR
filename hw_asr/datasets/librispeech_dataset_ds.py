@@ -1,11 +1,9 @@
 import json
 import logging
 import os
-import shutil
 from pathlib import Path
 
 import torchaudio
-from speechbrain.utils.data_utils import download_file
 from tqdm import tqdm
 
 from hw_asr.base.base_dataset import BaseDataset
@@ -51,7 +49,7 @@ class LibrispeechDatasetDS(BaseDataset):
 
     def _create_index(self, part):
         index = []
-        split_dir = os.join(self._data_dir, part)
+        split_dir = os.path.join(self._data_dir, part)
         if not split_dir.exists():
             raise Exception("part " + part + " does not exist.")
 
