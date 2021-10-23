@@ -67,7 +67,7 @@
         {
           "type": "LibrispeechDataset",
           "args": {
-            "part": "train-clean-100",
+            "part": "train-clean-360",
             "max_audio_length": 20.0,
             "max_text_length": 200,
             "data_dir": "/home/jupyter/mnt/s3/bucket-hse-rw/data/datasets/librispeech"
@@ -118,15 +118,15 @@
   "lr_scheduler": {
     "type": "OneCycleLR",
     "args": {
-      "steps_per_epoch": 478,
-      "epochs": 100,
+      "steps_per_epoch": 678,
+      "epochs": 150,
       "anneal_strategy": "linear",
       "max_lr": 5e-4,
       "pct_start": 0.2
     }
   },
   "trainer": {
-    "epochs": 150,
+    "epochs": 250,
     "save_dir": "saved/",
     "save_period": 5,
     "verbosity": 2,
