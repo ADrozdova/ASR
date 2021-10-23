@@ -62,12 +62,12 @@
   "data": {
     "train": {
       "batch_size": 32,
-      "num_workers": 16,
+      "num_workers": 8,
       "datasets": [
         {
           "type": "LibrispeechDataset",
           "args": {
-            "part": "train-clean-360",
+            "part": "train-other-500",
             "max_audio_length": 20.0,
             "max_text_length": 200,
             "data_dir": "/home/jupyter/mnt/s3/bucket-hse-rw/data/datasets/librispeech"
@@ -77,12 +77,12 @@
     },
     "val": {
       "batch_size": 32,
-      "num_workers": 16,
+      "num_workers": 8,
       "datasets": [
         {
           "type": "LibrispeechDataset",
           "args": {
-            "part": "dev-clean",
+            "part": "dev-other",
             "max_audio_length": 20.0,
             "max_text_length": 200,
             "data_dir": "/home/jupyter/mnt/s3/bucket-hse-rw/data/datasets/librispeech"
@@ -118,17 +118,17 @@
   "lr_scheduler": {
     "type": "OneCycleLR",
     "args": {
-      "steps_per_epoch": 1740,
-      "epochs": 150,
+      "steps_per_epoch": 2740,
+      "epochs": 110,
       "anneal_strategy": "linear",
       "max_lr": 5e-4,
       "pct_start": 0.2
     }
   },
   "trainer": {
-    "epochs": 250,
+    "epochs": 110,
     "save_dir": "saved/",
-    "save_period": 5,
+    "save_period": 1,
     "verbosity": 2,
     "monitor": "min val_loss",
     "early_stop": 100,
