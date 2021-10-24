@@ -70,7 +70,7 @@ def main(config, out_file):
                         "ground_truth": batch["text"][i],
                         "pred_text_argmax": text_encoder.ctc_decode(argmax),
                         "pred_text_beam_search": text_encoder.ctc_beam_search(
-                            batch["logits"][i][:probs_len].cpu(), probs_len, beam_size=100
+                            batch["log_probs"][i][:probs_len].cpu(), probs_len, beam_size=100
                         )[:10],
                     }
                 )
