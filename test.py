@@ -62,14 +62,15 @@ def main(config, out_file):
             batch["probs"] = batch["log_probs"].exp().cpu()
             batch["argmax"] = batch["probs"].argmax(-1)
             for i in range(len(batch["text"])):
-                argmax = batch["argmax"][i]
-                argmax = argmax[:int(batch["log_probs_length"][i])]
+                probs_len = int(batch["log_probs_length"][i])
+                argmax = batch["argmax"][i][:probs_len]
+
                 results.append(
                     {
                         "ground_truth": batch["text"][i],
                         "pred_text_argmax": text_encoder.ctc_decode(argmax),
                         "pred_text_beam_search": text_encoder.ctc_beam_search(
-                            batch["probs"][i], batch["log_probs_length"][i], beam_size=100
+                            batch["logits"][i][:probs_len], beam_size=100
                         )[:10],
                     }
                 )
