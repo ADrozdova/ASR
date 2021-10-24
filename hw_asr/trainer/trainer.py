@@ -100,7 +100,7 @@ class Trainer(BaseTrainer):
                             del p.grad  # free some memory
                     torch.cuda.empty_cache()
                     continue
-                elif "failed to open file" in str(e):
+                elif "Error loading audio file" in str(e):
                     self.logger.warning("failed to open file on batch. Skipping batch.")
                     for p in self.model.parameters():
                         if p.grad is not None:
