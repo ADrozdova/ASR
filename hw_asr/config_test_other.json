@@ -1,0 +1,152 @@
+{
+  "name": "default_config",
+  "n_gpu": 1,
+  "preprocessing": {
+    "sr": 16000,
+    "spectrogram": {
+      "type": "MelSpectrogram",
+      "args": {
+      }
+    }
+  },
+  "augmentations": {
+    "wave": [
+      {
+        "type": "Gain",
+            "args": {
+              "p": 1.0,
+              "sample_rate": 16000
+            }
+      },
+      {
+        "type": "PolarityInversion",
+            "args": {
+              "p": 1.0,
+              "sample_rate": 16000
+            }
+      },
+      {
+        "type": "PitchShift",
+            "args": {
+              "steps": 4,
+              "sample_rate": 16000
+            }
+      },
+      {
+        "type": "AddNoise",
+            "args": {
+              "sr": 16000
+            }
+      }
+    ],
+    "spectrogram": [
+      {
+        "type": "SpecAugment",
+            "args": {
+              "fixed_rate": 1.2,
+              "time_mask_param": 20,
+              "freq_mask_param": 10
+            }
+      }
+    ]
+  },
+  "arch": {
+    "type": "DS2",
+    "args": {
+      "n_feats": 128,
+      "n_cnn": 3,
+      "n_rnn":  5,
+      "hidden": 512
+    }
+  },
+  "data": {
+    "train": {
+      "batch_size": 32,
+      "num_workers": 8,
+      "datasets": [
+        {
+          "type": "LibrispeechDataset",
+          "args": {
+            "part": "train-other-500",
+            "max_audio_length": 20.0,
+            "max_text_length": 200,
+            "data_dir": "/home/jupyter/mnt/s3/bucket-hse-rw/data/datasets/librispeech"
+          }
+        }
+      ]
+    },
+    "val": {
+      "batch_size": 32,
+      "num_workers": 8,
+      "datasets": [
+        {
+          "type": "LibrispeechDataset",
+          "args": {
+            "part": "dev-other",
+            "max_audio_length": 20.0,
+            "max_text_length": 200,
+            "data_dir": "/home/jupyter/mnt/s3/bucket-hse-rw/data/datasets/librispeech"
+          }
+        }
+      ]
+    },
+    "test": {
+      "batch_size": 32,
+      "num_workers": 8,
+      "datasets": [
+        {
+          "type": "LibrispeechDataset",
+          "args": {
+            "part": "test-other",
+            "data_dir": "/home/jupyter/mnt/s3/bucket-hse-rw/data/datasets/librispeech"
+          }
+        }
+      ]
+    }
+  },
+  "optimizer": {
+    "type": "AdamW",
+    "args": {
+      "lr": 5e-4
+    }
+  },
+  "loss": {
+    "type": "CTCLoss",
+    "args": {}
+  },
+  "metrics": [
+    {
+      "type": "ArgmaxWERMetric",
+      "args": {
+        "name": "WER (argmax)"
+      }
+    },
+    {
+      "type": "ArgmaxCERMetric",
+      "args": {
+        "name": "CER (argmax)"
+      }
+    }
+  ],
+  "lr_scheduler": {
+    "type": "OneCycleLR",
+    "args": {
+      "steps_per_epoch": 2895,
+      "epochs": 120,
+      "anneal_strategy": "linear",
+      "max_lr": 5e-4,
+      "pct_start": 0.2
+    }
+  },
+  "trainer": {
+    "epochs": 120,
+    "save_dir": "saved/",
+    "save_period": 1,
+    "verbosity": 2,
+    "monitor": "min val_loss",
+    "early_stop": 100,
+    "visualize": "wandb",
+    "wandb_project": "asr_project",
+    "grad_norm_clip": 10
+  }
+}
