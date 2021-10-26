@@ -23,7 +23,9 @@ class CTCCharTextEncoder(CharTextEncoder):
             self.ind2char[max(self.ind2char.keys()) + 1] = text
         self.char2ind = {v: k for k, v in self.ind2char.items()}
         lm_path, unigram_list = self.load_kenlm()
-        self.decoder = build_ctcdecoder([' '] + alphabet[1:], kenlm.Model(lm_path), unigram_list)
+        alph = list(self.ind2char.values())
+        alph[0] = ''
+        self.decoder = build_ctcdecoder(alph, lm_path, unigram_list)
 
     def load_kenlm(self):
         # source: https://github.com/kensho-technologies/pyctcdecode/blob/main/tutorials/01_pipeline_nemo.ipynb

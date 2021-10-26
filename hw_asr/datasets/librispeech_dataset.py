@@ -33,6 +33,8 @@ class LibrispeechDataset(BaseDataset):
         if data_dir is None:
             data_dir = ROOT_PATH / "data" / "datasets" / "librispeech"
             data_dir.mkdir(exist_ok=True, parents=True)
+        else:
+            data_dir = Path(data_dir)
         self._data_dir = data_dir
         if part == 'train_all':
             index = sum([self._get_or_load_index(part)
@@ -53,20 +55,20 @@ class LibrispeechDataset(BaseDataset):
         shutil.rmtree(str(self._data_dir / "LibriSpeech"))
 
     def _get_or_load_index(self, part):
-        index_path = self._data_dir + "/" + f"{part}_index.json"
-        if os.path.exists(index_path):
-            with open(index_path, "r") as f:
+        index_path = self._data_dir / f"{part}_index.json"
+        if index_path.exists():
+            with index_path.open() as f:
                 index = json.load(f)
         else:
             index = self._create_index(part)
-            with open(index_path, "w") as f:
+            with index_path.open("w") as f:
                 json.dump(index, f, indent=2)
         return index
 
     def _create_index(self, part):
         index = []
-        split_dir = self._data_dir + "/" + part
-        if not os.path.exists(split_dir):
+        split_dir = self._data_dir / part
+        if not split_dir.exists():
             self._load_part(part)
 
         flac_dirs = set()
