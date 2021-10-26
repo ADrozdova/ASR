@@ -8,7 +8,7 @@ pip install -r ./requirements.txt -q
 Download model checkpoint and config in `default_test_model/checkpoint.pth`
    and `default_test_model/config.json`.
 ```shell
-python download_checkpoint.py
+python3 download_checkpoint.py
 ```
 Noises for augmentation are downloaded in `hw_asr/augmentations/wave_augmentations/add_noise.py` line `20`.
 
