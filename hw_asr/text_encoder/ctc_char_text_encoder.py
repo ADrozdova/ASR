@@ -66,7 +66,6 @@ class CTCCharTextEncoder(CharTextEncoder):
         return lm_path, unigram_list
 
     def ctc_decode(self, inds: List[int]) -> str:
-        # TODO: your code here
         result = []
         last_blank = True
         if torch.is_tensor(inds):
@@ -85,6 +84,7 @@ class CTCCharTextEncoder(CharTextEncoder):
         Performs beam search and returns a list of pairs (hypothesis, hypothesis probability).
         """
         assert len(probs.shape) == 2
+        probs = probs[:probs_length]
         char_length, voc_size = probs.shape
         assert voc_size == len(self.ind2char)
         if torch.is_tensor(probs):
