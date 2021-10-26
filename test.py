@@ -3,11 +3,13 @@ import json
 import os
 from pathlib import Path
 
+import numpy as np
 import torch
 from tqdm import tqdm
 
 import hw_asr.model as module_model
 from hw_asr.datasets.utils import get_dataloaders
+from hw_asr.metric.utils import calc_cer, calc_wer
 from hw_asr.text_encoder.ctc_char_text_encoder import CTCCharTextEncoder
 from hw_asr.trainer import Trainer
 from hw_asr.utils import ROOT_PATH
@@ -42,6 +44,8 @@ def main(config, out_file):
     model.eval()
 
     results = []
+    res_cer = []
+    res_wer = []
 
     with torch.no_grad():
         for batch_num, batch in enumerate(tqdm(dataloaders["test"])):
@@ -58,19 +62,25 @@ def main(config, out_file):
             batch["probs"] = batch["log_probs"].exp().cpu()
             batch["argmax"] = batch["probs"].argmax(-1)
             for i in range(len(batch["text"])):
-                argmax = batch["argmax"][i]
-                argmax = argmax[:int(batch["log_probs_length"][i])]
+                probs_len = int(batch["log_probs_length"][i])
+                argmax = batch["argmax"][i][:probs_len]
+
                 results.append(
                     {
-                        "ground_trurh": batch["text"][i],
+                        "ground_truth": batch["text"][i],
                         "pred_text_argmax": text_encoder.ctc_decode(argmax),
                         "pred_text_beam_search": text_encoder.ctc_beam_search(
-                            batch["probs"], batch["log_probs_length"], beam_size=100
+                            batch["log_probs"][i][:probs_len].cpu(), probs_len, beam_size=100
                         )[:10],
                     }
                 )
+                res_cer.append(calc_cer(results[-1]["ground_truth"], results[-1]["pred_text_beam_search"][0][0]))
+                res_wer.append(calc_wer(results[-1]["ground_truth"], results[-1]["pred_text_beam_search"][0][0]))
+
     with Path(out_file).open("w") as f:
         json.dump(results, f, indent=2)
+    print("Test CER", np.mean(res_cer))
+    print("Test WER", np.mean(res_wer))
 
 
 if __name__ == "__main__":
@@ -140,7 +150,7 @@ if __name__ == "__main__":
     # update with addition configs from `args.config` if provided
     if args.config is not None:
         with Path(args.config).open() as f:
-            config.config.upadte(json.load(f))
+            config.config.update(json.load(f))
 
     # if `--test-data-folder` was provided, set it as a default test set
     if args.test_data_folder is not None:
@@ -166,6 +176,6 @@ if __name__ == "__main__":
 
     assert config.config.get("data", {}).get("test", None) is not None
     config["data"]["test"]["batch_size"] = args.batch_size
-    config["data"]["test"]["n_jobs"] = args.n_jobs
+    config["data"]["test"]["n_jobs"] = args.jobs
 
     main(config, args.output)

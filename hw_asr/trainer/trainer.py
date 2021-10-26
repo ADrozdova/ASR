@@ -100,6 +100,13 @@ class Trainer(BaseTrainer):
                             del p.grad  # free some memory
                     torch.cuda.empty_cache()
                     continue
+                elif "Error loading audio file" in str(e):
+                    self.logger.warning("failed to open file on batch. Skipping batch.")
+                    for p in self.model.parameters():
+                        if p.grad is not None:
+                            del p.grad  # free some memory
+                    torch.cuda.empty_cache()
+                    continue
                 else:
                     raise e
             self.train_metrics.update("grad norm", self.get_grad_norm())
@@ -203,7 +210,6 @@ class Trainer(BaseTrainer):
             *args,
             **kwargs,
     ):
-        # TODO: implement logging of beam search results
         if self.writer is None:
             return
 
